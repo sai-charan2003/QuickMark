@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct QuickMarkApp: App {
+    @StateObject private var dataController = DataController()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView(context: dataController.container.viewContext)
+                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }
