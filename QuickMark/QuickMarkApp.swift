@@ -12,8 +12,18 @@ struct QuickMarkApp: App {
     @StateObject private var dataController = DataController()
     var body: some Scene {
         WindowGroup {
+
             HomeView(context: dataController.container.viewContext)
                 .environment(\.managedObjectContext, dataController.container.viewContext)
+                
+            
+        }
+        .windowToolbarStyle(.automatic)
+        .commands{
+            CommandGroup(replacing: .newItem){
+                
+            }
+            
         }
     }
 }

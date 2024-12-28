@@ -10,6 +10,7 @@ import SwiftSoup
 
 class HomeViewModel : ObservableObject {
     @Published var bookmarks : [QuickMark] = []
+    @Published var loadingState : LoadingState? = nil
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
@@ -44,19 +45,25 @@ class HomeViewModel : ObservableObject {
     }
     
     func addBookmark(url: String) {
-        print("Adding new bookmark \(url)")
-        
-       
-        
+        loadingState = .loading
         
         extractWebsiteData(from: url) { quickmark in
+            
 
-            DispatchQueue.main.async {      
-                do {
-                    print("Saving bookmark with extracted data")
-                    try self.context.save()
-                } catch {
-                    print("Error saving context: \(error)")
+            DispatchQueue.main.async {
+                if let quickmark {
+                    
+                    
+                    do {
+                        print("Saving bookmark with extracted data")
+                        try self.context.save()
+                        self.loadingState = .success
+                    } catch {
+                        print("Error saving context: \(error)")
+                        self.loadingState = .error(error)
+                    }
+                } else {
+                    self.loadingState = .error(NSError(domain: "Unable to add.", code: 0, userInfo: nil))
                 }
             }
         }
@@ -89,14 +96,7 @@ class HomeViewModel : ObservableObject {
                 let document = try SwiftSoup.parse(html)
                 let title = try document.select("title").text()
                 let imageURL = try document.select("meta[property=og:image]").attr("content")
-            
-                
-                guard !title.isEmpty, !imageURL.isEmpty else {
-                    
-                    
-                    completion(nil)
-                    return
-                }
+
                 
                 let quickMark = QuickMark(context : self.context)
                 quickMark.title = title
@@ -105,7 +105,7 @@ class HomeViewModel : ObservableObject {
                 quickMark.websiteURL = urlString
                 quickMark.uuid = UUID()
                 quickMark.createdAt = Date()
-                print(quickMark.title)
+
 
             
                 completion(quickMark)
