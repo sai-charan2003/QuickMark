@@ -56,6 +56,7 @@ class HomeViewModel : ObservableObject {
                     
                     do {
                         print("Saving bookmark with extracted data")
+                        
                         try self.context.save()
                         self.loadingState = .success
                     } catch {
@@ -63,7 +64,8 @@ class HomeViewModel : ObservableObject {
                         self.loadingState = .error(error)
                     }
                 } else {
-                    self.loadingState = .error(NSError(domain: "Unable to add.", code: 0, userInfo: nil))
+                    print("Error")
+                    self.loadingState = .error(NSError(domain: "Invalid URL", code: 0, userInfo: nil))
                 }
             }
         }
@@ -148,5 +150,9 @@ class HomeViewModel : ObservableObject {
         fetchBookmarks()
         
 
+    }
+    
+    func resetLoadingState(){
+        loadingState = nil
     }
 }

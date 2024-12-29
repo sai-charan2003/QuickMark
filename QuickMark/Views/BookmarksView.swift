@@ -34,6 +34,9 @@ struct BookmarksView: View {
                         
                     })
                     
+                    
+                    
+                    
                         .frame(width: 300, height: 250)
                 }
             }
@@ -53,61 +56,45 @@ struct BookmarksView: View {
 
             
 
-            .sheet(isPresented: $showAddURL){
+            .sheet(isPresented: $showAddURL) {
                 AddBookmarkView(
                     loadingState: Binding(
                         get: { viewModel.loadingState },
-                        set: { _ in}
+                        set: { _ in }
                     ),
                     onBookmark: { url in
                         self.url = url
-                        addURL()
-                    }, onCancel: {
-                        showAddURL = false
                         
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            withAnimation {
+                                viewModel.addBookmark(url: url)
+                            }
+                        }
+                    },
+                    onCancel: {
+                        showAddURL = false
+                        viewModel.resetLoadingState()
                     }
-                    
                 )
-
-
-
-                
-                
             }
 
             
             
         }
         .navigationTitle("All Bookmarks")
-        
-        
-        
-
-
-
-
-        
-        
     }
-        
-    private func addURL(){
-        viewModel.addBookmark(url: url)
-        if(viewModel.loadingState == .success){
-            showAddURL = false
-        }
-        
-        
-        
-    }
+
     private func ClearAll(){
         DispatchQueue.main.async {
             viewModel.clearAll()
-            bookmarks = viewModel.bookmarks
+           
         }
     }
     
     private func deleteBookmark(bookmark : QuickMark){
-        viewModel.deleteBookmark(bookmark: bookmark)
+        withAnimation{
+            viewModel.deleteBookmark(bookmark: bookmark)
+        }
     }
 }
 
@@ -124,7 +111,7 @@ struct BookmarkCard: View {
                 switch phase {
                 case .empty:
                     ProgressView()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 300, height: 168)
                 case .success(let image):
                     image
                         .resizable()
@@ -150,10 +137,13 @@ struct BookmarkCard: View {
                     .foregroundColor(.primary)
                     .lineLimit(4)
                     .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 3)
 
-                Text("Added on \(bookmark.createdAt?.formatted(.dateTime.month().day().year()) ?? "")")
+                Text(bookmark.hostURL ?? "Host")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .padding(.horizontal, 3)
+                    .padding(.vertical, 10)
             }
 
         }
@@ -196,6 +186,7 @@ struct BookmarkCard: View {
 
 
         }
+        
         
         .background(Color.white.opacity(0.05))
         .cornerRadius(10)

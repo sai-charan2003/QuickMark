@@ -5,50 +5,81 @@
 //  Created by Sai Charan on 28/12/24.
 //
 import SwiftUI
-struct AddBookmarkView : View {
+
+struct AddBookmarkView: View {
     @State var urlString: String = ""
     @Binding var loadingState: LoadingState?
     
-    var onBookmark : ((String)->Void)
-    var onCancel : (()->Void)
-    
+    var onBookmark: ((String) -> Void)
+    var onCancel: (() -> Void)
     
     var body: some View {
         VStack {
             Text("Add Bookmark")
                 .font(.title)
+            
             Divider()
-            TextField("Enter URL",text: $urlString)
-                .padding()
+            
+            
+            VStack(alignment: .leading, spacing: 4) {
+                TextField("Enter URL", text: $urlString)
+                    .submitLabel(.return)
+                    .onSubmit {
+                        onBookmark(urlString)
+                    }
+                                        
+                    
+                    
+                    .cornerRadius(8)
+                if case .some(.error(_)) = loadingState {
+                    Text("Invalid URL")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.horizontal,2)
+                        .transition(.opacity.combined(with: .scale))
+                }
+ 
+                
+
+            }
+            .padding(.bottom, 16)
+            
             Divider()
+            
+            
             HStack {
-                Button("Cancel"){
+                Button("Cancel") {
+                    onCancel()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Button {
+                    onBookmark(urlString)
+                } label: {
+                    HStack {
+                        if loadingState == .loading {
+                            ProgressView()
+                                .controlSize(.mini)
+                                .scaleEffect(1.2)
+                        }
+                        if loadingState == .success {
+                            Image(systemName: "checkmark.circle")
+                        }
+                        Text("Bookmark it")
+                    }
+                }
+                .keyboardShortcut(.return)
+            }
+        }
+        .padding()
+        .onChange(of: loadingState) { _, newState in
+            if newState == .success {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     onCancel()
                     
                 }
-                .keyboardShortcut(.cancelAction)
-                Button{
-                    onBookmark(urlString)
-                    
-                } label: {
-                    if(loadingState == .loading){
-                        ProgressView()
-                            .controlSize(.small)  
-                    }
-                    Text("Bookmark it")
-                }
-                .keyboardShortcut(.return)
-                
+               
             }
-            
-            
-        }
-        .padding()
-        .onChange(of: loadingState){ oldState, newState in
-            if newState == .success{
-                onCancel()
-            }
-            
         }
     }
 }
