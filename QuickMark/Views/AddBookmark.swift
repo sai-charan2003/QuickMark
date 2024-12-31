@@ -27,10 +27,10 @@ struct AddBookmarkView: View {
                     .onSubmit {
                         onBookmark(urlString)
                     }
-                                        
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+ 
                     
-                    
-                    .cornerRadius(8)
                 if case .some(.error(_)) = loadingState {
                     Text("Invalid URL")
                         .foregroundColor(.red)

@@ -71,11 +71,16 @@ class HomeViewModel : ObservableObject {
         }
     }
 
-    
 
 
     func extractWebsiteData(from urlString: String, completion: @escaping (QuickMark?) -> Void) {
-        guard let url = URL(string: urlString) else {
+        
+        var normalizedURLString = urlString
+        if !urlString.hasPrefix("http://") && !urlString.hasPrefix("https://") {
+            normalizedURLString = "https://\(urlString)"
+        }
+        
+        guard let url = URL(string: normalizedURLString) else {
             print("Invalid URL")
             completion(nil)
             return
@@ -98,18 +103,15 @@ class HomeViewModel : ObservableObject {
                 let document = try SwiftSoup.parse(html)
                 let title = try document.select("title").text()
                 let imageURL = try document.select("meta[property=og:image]").attr("content")
-
                 
-                let quickMark = QuickMark(context : self.context)
+                let quickMark = QuickMark(context: self.context)
                 quickMark.title = title
                 quickMark.imageURL = imageURL
                 quickMark.hostURL = url.host
-                quickMark.websiteURL = urlString
+                quickMark.websiteURL = normalizedURLString
                 quickMark.uuid = UUID()
                 quickMark.createdAt = Date()
-
-
-            
+                
                 completion(quickMark)
             } catch {
                 print("Error parsing HTML: \(error)")
@@ -118,6 +120,7 @@ class HomeViewModel : ObservableObject {
         }
         task.resume()
     }
+
 
     
     func deleteBookmark(bookmark : QuickMark){

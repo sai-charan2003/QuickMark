@@ -171,10 +171,18 @@ struct BookmarkCard: View {
             
             
             Divider()
-            Button("Copy Link"){
-                clipBoard.clearContents()
-                clipBoard.setString(bookmark.websiteURL ?? "", forType: .string)
+            Menu("Copy"){
+                Button("Copy URL"){
+                    
+                    clipBoard.clearContents()
+                    clipBoard.setString(bookmark.websiteURL ?? "", forType: .string)
+                }
+                Button("Copy Title"){
+                    clipBoard.clearContents()
+                    clipBoard.setString(bookmark.title ?? "", forType: .string)
+                }
             }
+
             Button("Delete"){
                 onDelete(bookmark)
                 
