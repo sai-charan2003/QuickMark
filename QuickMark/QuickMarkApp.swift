@@ -10,20 +10,25 @@ import SwiftUI
 @main
 struct QuickMarkApp: App {
     @StateObject private var dataController = DataController()
+    
+    // Correctly pass the context
+    @StateObject private var homeViewModel: HomeViewModel
+
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
+    init() {
+
+        let context = DataController().container.viewContext
+        _homeViewModel = StateObject(wrappedValue: HomeViewModel(context: context))
+
+        appDelegate.homeViewModel = HomeViewModel(context: context)
+    }
+
     var body: some Scene {
         WindowGroup {
-
-            HomeView(context: dataController.container.viewContext)
+            HomeView()
                 .environment(\.managedObjectContext, dataController.container.viewContext)
-                
-            
-        }
-        .windowToolbarStyle(.automatic)
-        .commands{
-            CommandGroup(replacing: .newItem){
-                
-            }
-            
+                .environmentObject(homeViewModel)
         }
     }
 }

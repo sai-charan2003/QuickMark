@@ -8,20 +8,12 @@ import SwiftUI
 
 struct BookmarksView: View {
     
-    @StateObject private var viewModel: HomeViewModel
-
-    
-    
-    
+    @EnvironmentObject private var viewModel: HomeViewModel
+    @State var searchString : String = ""
     @State var showAddURL: Bool = false
     @State var url : String = ""
-    
     @State var bookmarks : [QuickMark] = []
-    init(context: NSManagedObjectContext) {
-        _viewModel = StateObject(wrappedValue: HomeViewModel(context: context))
-        
-        
-    }
+
     
 
     var body: some View {
@@ -82,6 +74,7 @@ struct BookmarksView: View {
             
         }
         .navigationTitle("All Bookmarks")
+        
     }
 
     private func ClearAll(){

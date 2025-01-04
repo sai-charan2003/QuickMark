@@ -6,16 +6,13 @@
 //
 import SwiftUI
 struct HomeView: View {
-    @Environment(\.managedObjectContext) var context
-    @StateObject private var viewModel: HomeViewModel
-    @State var showAddURL: Bool = false
-    @State var url: String = ""
-    @State var sideBarItem: SideBarItems = .All
-    @State var bookmarks: [QuickMark] = []
-    
-    init(context: NSManagedObjectContext) {
-        _viewModel = StateObject(wrappedValue: HomeViewModel(context: context))
-    }
+    @Environment(\.managedObjectContext) private var context
+    @State private var showAddURL: Bool = false
+    @State private var url: String = ""
+    @State private var sideBarItem: SideBarItems = .All
+    @State private var bookmarks: [QuickMark] = []
+    @EnvironmentObject private var viewModel: HomeViewModel
+
 
     var body: some View {
         NavigationSplitView {
@@ -34,7 +31,7 @@ struct HomeView: View {
         } detail: {
             switch sideBarItem {
             case .All:
-                BookmarksView(context: context)
+                BookmarksView()
             }
         }
     }
