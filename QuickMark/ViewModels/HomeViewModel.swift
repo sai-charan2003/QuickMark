@@ -51,9 +51,7 @@ class HomeViewModel : ObservableObject {
             
 
             DispatchQueue.main.async {
-                if let quickmark {
-                    
-                    
+                if quickmark != nil {
                     do {
                         print("Saving bookmark with extracted data")
                         
@@ -158,4 +156,17 @@ class HomeViewModel : ObservableObject {
     func resetLoadingState(){
         loadingState = nil
     }
+    
+    func searchBookmarks(query: String) {
+        let request: NSFetchRequest<QuickMark> = QuickMark.fetchRequest()
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@ OR websiteURL CONTAINS[cd] %@", query, query)
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \QuickMark.createdAt, ascending: false)]
+        
+        do {
+            bookmarks = try context.fetch(request)
+        } catch {
+            print("Error fetching search results: \(error)")
+        }
+    }
+
 }

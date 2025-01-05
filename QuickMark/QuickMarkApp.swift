@@ -10,8 +10,7 @@ import SwiftUI
 @main
 struct QuickMarkApp: App {
     @StateObject private var dataController = DataController()
-    
-    // Correctly pass the context
+
     @StateObject private var homeViewModel: HomeViewModel
 
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate

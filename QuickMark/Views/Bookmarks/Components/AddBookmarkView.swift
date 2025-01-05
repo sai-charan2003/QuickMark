@@ -23,12 +23,11 @@ struct AddBookmarkView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 TextField("Enter URL", text: $urlString)
-                    .submitLabel(.return)
+                    .bookmarkTextFieldStyle()
                     .onSubmit {
                         onBookmark(urlString)
                     }
-                    .textFieldStyle(.roundedBorder)
-                    .padding()
+                    
  
                     
                 if case .some(.error(_)) = loadingState {

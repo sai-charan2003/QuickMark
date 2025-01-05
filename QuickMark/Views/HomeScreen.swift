@@ -34,6 +34,32 @@ struct HomeView: View {
                 BookmarksView()
             }
         }
+        .toolbar{
+            ToolbarItem(placement: .primaryAction){
+                Button(action: { showAddURL.toggle() }) {
+                    Label("Add Item", systemImage: "plus")
+                }
+                .keyboardShortcut("n", modifiers: .command)
+                .sheet(isPresented: $showAddURL) {
+                    AddBookmarkView(
+                        loadingState: $viewModel.loadingState,
+                        onBookmark: { url in
+                            withAnimation{
+                                viewModel.addBookmark(url: url)
+                            }
+                            showAddURL = false
+                        },
+                        onCancel: {
+                            showAddURL = false
+                            viewModel.resetLoadingState()
+                        }
+                    )
+                }
+            }
+                
+            }
+        }
     }
-}
+
+
 

@@ -24,7 +24,7 @@ class AppDelegate : NSObject, NSApplicationDelegate {
             button.image = NSImage(systemSymbolName: "bookmark", accessibilityDescription: "Bookmark Icon")
         }
         let menu = NSMenu()
-        let textFieldView = TextFieldMenuView().environmentObject(homeViewModel!)
+        let textFieldView = MenuBarView().environmentObject(homeViewModel!)
         let hostingController = NSHostingController(rootView: textFieldView)
         hostingController.view.frame.size = CGSize(width: 200, height: 100) 
         let customMenuItem = NSMenuItem()

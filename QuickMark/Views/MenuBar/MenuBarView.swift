@@ -4,18 +4,20 @@
 //
 //  Created by Sai Charan on 03/01/25.
 //
-import AppKit
+
 import SwiftUI
 
-struct TextFieldMenuView: View {
+struct MenuBarView: View {
     @State private var bookmarkURL: String = ""
     @EnvironmentObject private var viewModel : HomeViewModel
 
     var body: some View {
         VStack {
             TextField("Enter bookmark URL", text: $bookmarkURL)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
+                .bookmarkTextFieldStyle()
+                .onSubmit {
+                    viewModel.addBookmark(url: bookmarkURL)
+                }
             Button{
                 viewModel.addBookmark(url: bookmarkURL)
             } label: {
