@@ -34,7 +34,7 @@ struct AddBookmarkView: View {
                     Text("Invalid URL")
                         .foregroundColor(.red)
                         .font(.caption)
-                        .padding(.horizontal,2)
+                        .padding(.horizontal,20)
                         .transition(.opacity.combined(with: .scale))
                 }
  

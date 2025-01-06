@@ -47,7 +47,7 @@ struct HomeView: View {
                             withAnimation{
                                 viewModel.addBookmark(url: url)
                             }
-                            showAddURL = false
+                            
                         },
                         onCancel: {
                             showAddURL = false

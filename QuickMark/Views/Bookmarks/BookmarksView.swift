@@ -28,6 +28,7 @@ struct BookmarksView: View {
         .navigationTitle("All Bookmarks")
         .searchable(text: $searchString)
         .searchFocused($isSearchFieldFocused)
+        .background(Button("", action: { isSearchFieldFocused = true }).keyboardShortcut("f",modifiers: .command).hidden())
         
         
         .onChange(of: searchString){
