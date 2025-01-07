@@ -101,15 +101,16 @@ class HomeViewModel : ObservableObject {
                 let document = try SwiftSoup.parse(html)
                 let title = try document.select("title").text()
                 let imageURL = try document.select("meta[property=og:image]").attr("content")
+                print(imageURL)
                 
                 let quickMark = QuickMark(context: self.context)
                 quickMark.title = title
-                quickMark.imageURL = imageURL
+                quickMark.imageURL = imageURL 
                 quickMark.hostURL = url.host
                 quickMark.websiteURL = normalizedURLString
                 quickMark.uuid = UUID()
                 quickMark.createdAt = Date()
-                
+                print(quickMark.imageURL)
                 completion(quickMark)
             } catch {
                 print("Error parsing HTML: \(error)")

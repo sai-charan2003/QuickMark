@@ -14,98 +14,92 @@ struct BookmarkCard: View {
 
     var body: some View {
         VStack {
-            
-            AsyncImage(url: URL(string: bookmark.imageURL ?? "https://icon.horse/icon/\(String(describing: bookmark.hostURL))")) { phase in
+            AsyncImage(url: URL(string: bookmark.imageURL?.isEmpty == false ? bookmark.imageURL ?? "" : "https://api.faviconkit.com/\(bookmark.hostURL ?? "")")) { phase in
                 switch phase {
                 case .empty:
                     ProgressView()
                         .frame(width: 300, height: 168)
                 case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 300, height: 168)
-                        .clipped()
-                        .cornerRadius(8)
+                    ZStack {
+                        Rectangle()
+                            .fill(.tertiary.opacity(0.3))
+                            .frame(width: 300, height: 168)
+                        
+                        if (bookmark.imageURL?.isEmpty ?? true) {
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 48, height: 48)
+                        } else {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 300, height: 168)
+                        }
+                    }
+                    .clipped()
+                    .cornerRadius(8)
                 case .failure:
-                    Image(systemName: "photo")
+                    Image("placeholder")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 300, height: 168)
-                        .foregroundColor(.gray)
+                        .background(.tertiary.opacity(0.3))
+
                 @unknown default:
                     EmptyView()
                 }
             }
-
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(bookmark.title ?? "Untitled")
                     .websiteTitleStyle()
-
-                
-
                 Text(bookmark.hostURL ?? "Host")
                     .websiteHostStyle()
-
             }
-
         }
         .onTapGesture {
-            if let url = URL(string : bookmark.websiteURL!) {
+            if let url = URL(string: bookmark.websiteURL!) {
                 openURL(url)
-                
             }
         }
-        .onHover{ isHovering in
+        .onHover { isHovering in
             if isHovering {
                 NSCursor.pointingHand.push()
             } else {
                 NSCursor.pop()
             }
-                            
-            
         }
-        .contextMenu{
+        .contextMenu {
             Button("Open") {
-                if let url = URL(string : bookmark.websiteURL!) {
+                if let url = URL(string: bookmark.websiteURL!) {
                     openURL(url)
-                    
                 }
             }
             
-            
             Divider()
-            Menu("Copy"){
-                Button("Copy URL"){
-                    
+            Menu("Copy") {
+                Button("Copy URL") {
                     clipBoard.clearContents()
                     clipBoard.setString(bookmark.websiteURL ?? "", forType: .string)
                 }
-                Button("Copy Title"){
+                Button("Copy Title") {
                     clipBoard.clearContents()
                     clipBoard.setString(bookmark.title ?? "", forType: .string)
                 }
             }
 
-            Button("Delete"){
+            Button("Delete") {
                 onDelete(bookmark)
-                
             }
             Divider()
             if let url = URL(string: bookmark.websiteURL ?? "") {
                 ShareLink("Share", item: url)
             }
-
-
         }
-        
-        
-        .background(Color.white.opacity(0.05))
+        .background(.tertiary.opacity(0.2))
         .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-        .padding(.top,20)
+        
+        .padding(.top, 20)
     }
-    
-    
 }
