@@ -169,5 +169,10 @@ class HomeViewModel : ObservableObject {
             print("Error fetching search results: \(error)")
         }
     }
+    
+    func fetchLastThreeBookmarks() -> [QuickMark] {
+        return Array(bookmarks.sorted { $0.createdAt! < $1.createdAt! }.prefix(3))
+    }
+
 
 }

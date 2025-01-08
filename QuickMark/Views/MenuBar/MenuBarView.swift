@@ -10,6 +10,7 @@ import SwiftUI
 struct MenuBarView: View {
     @State private var bookmarkURL: String = ""
     @EnvironmentObject private var viewModel : HomeViewModel
+    @Environment(\.openURL) var openURL
 
     var body: some View {
         VStack {
@@ -31,7 +32,36 @@ struct MenuBarView: View {
                 }
             }
             .padding(.bottom, 5)
+            Text("Recent")
+                .font(.headline)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity,alignment: .leading)
+                .padding(.horizontal,15)
+            
+            List(viewModel.fetchLastThreeBookmarks(), id: \.uuid) { bookmark in
+                Text(bookmark.title ?? "Untitled")
+                    .padding(.vertical,8)
+                    
+                    .onTapGesture {
+                        if let url = URL(string : bookmark.websiteURL!){
+                            openURL(url)
+                        }
+                        
+                    }
+                    .onHover { isHovering in
+                        if isHovering {
+                            NSCursor.pointingHand.push()
+                        } else {
+                            NSCursor.pop()
+                        }
+                    }
+                
+            }
+            .scrollContentBackground(.hidden)
+            .listRowSeparatorTint(.white)
+            
+            
         }
-        .frame(width: 200)
+        
     }
 }

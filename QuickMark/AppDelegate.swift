@@ -12,6 +12,7 @@ import AppKit
 class AppDelegate : NSObject, NSApplicationDelegate {
     var statusItem : NSStatusItem?
     var homeViewModel: HomeViewModel?
+    private var popover: NSPopover?
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         setupMenu()
@@ -22,17 +23,27 @@ class AppDelegate : NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem?.button {
             button.image = NSImage(systemSymbolName: "bookmark", accessibilityDescription: "Bookmark Icon")
+            button.action = #selector(showPopover)
         }
-        let menu = NSMenu()
+        popover = NSPopover()
+        popover?.contentSize = NSSize(width: 300, height: 300)
+        popover?.behavior = .transient
         let textFieldView = MenuBarView().environmentObject(homeViewModel!)
         let hostingController = NSHostingController(rootView: textFieldView)
-        hostingController.view.frame.size = CGSize(width: 200, height: 100) 
+        
         let customMenuItem = NSMenuItem()
-        customMenuItem.view = hostingController.view
-        menu.addItem(customMenuItem)
+        popover?.contentViewController = hostingController
 
-        statusItem?.menu = menu
         
     }
-    
+    @objc func showPopover() {
+        guard let button = statusItem?.button, let popover = popover else { return }
+        if popover.isShown {
+            popover.performClose(nil)
+        } else {
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        }
+                    
+        
+    }
 }
