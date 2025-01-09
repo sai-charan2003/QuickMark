@@ -36,11 +36,12 @@ struct MenuBarView: View {
                 .font(.headline)
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity,alignment: .leading)
-                .padding(.horizontal,15)
+                .padding(.horizontal,8)
             
             List(viewModel.fetchLastThreeBookmarks(), id: \.uuid) { bookmark in
                 Text(bookmark.title ?? "Untitled")
                     .padding(.vertical,8)
+                    .lineLimit(2)
                     
                     .onTapGesture {
                         if let url = URL(string : bookmark.websiteURL!){
@@ -55,10 +56,16 @@ struct MenuBarView: View {
                             NSCursor.pop()
                         }
                     }
+                    
+                
                 
             }
+            .listStyle(PlainListStyle())
             .scrollContentBackground(.hidden)
-            .listRowSeparatorTint(.white)
+            .listSectionSeparator(.visible, edges: .all)
+            .listSectionSeparatorTint(.secondary)
+            .environment(\.defaultMinListRowHeight, 2)
+            
             
             
         }

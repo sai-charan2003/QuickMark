@@ -26,12 +26,10 @@ class AppDelegate : NSObject, NSApplicationDelegate {
             button.action = #selector(showPopover)
         }
         popover = NSPopover()
-        popover?.contentSize = NSSize(width: 300, height: 300)
+//        popover?.contentSize = NSSize(width: 300, height: 300)
         popover?.behavior = .transient
         let textFieldView = MenuBarView().environmentObject(homeViewModel!)
         let hostingController = NSHostingController(rootView: textFieldView)
-        
-        let customMenuItem = NSMenuItem()
         popover?.contentViewController = hostingController
 
         

@@ -101,5 +101,11 @@ struct BookmarkCard: View {
         .cornerRadius(10)
         
         .padding(.top, 20)
+        .onDrag{
+            return NSItemProvider(object: bookmark.websiteURL! as NSString)
+        } preview: {
+            CompactCard(bookmark: bookmark)
+        }
+
     }
 }
