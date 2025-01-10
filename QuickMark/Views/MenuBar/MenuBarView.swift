@@ -56,6 +56,11 @@ struct MenuBarView: View {
                             NSCursor.pop()
                         }
                     }
+                    .onDrag{
+                        return NSItemProvider(object: bookmark.websiteURL! as NSString)
+                    } preview: {
+                        CompactCard(bookmark: bookmark)
+                    }
                     
                 
                 
