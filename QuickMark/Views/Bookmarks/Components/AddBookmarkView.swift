@@ -9,8 +9,10 @@ import SwiftUI
 struct AddBookmarkView: View {
     @State var urlString: String = ""
     @Binding var loadingState: LoadingState?
+    @State var folderList : [FolderData] = []
+    @State var selectedFolder: FolderData?
     
-    var onBookmark: ((String) -> Void)
+    var onBookmark: ((String,UUID?) -> Void)
     var onCancel: (() -> Void)
     
     var body: some View {
@@ -25,7 +27,7 @@ struct AddBookmarkView: View {
                 TextField("Enter URL", text: $urlString)
                     .bookmarkTextFieldStyle()
                     .onSubmit {
-                        onBookmark(urlString)
+                        onBookmark(urlString,selectedFolder?.uuid)
                     }
                     
  
@@ -37,6 +39,8 @@ struct AddBookmarkView: View {
                         .padding(.horizontal,20)
                         .transition(.opacity.combined(with: .scale))
                 }
+                AddFolderSection()
+
  
                 
 
@@ -53,7 +57,7 @@ struct AddBookmarkView: View {
                 .keyboardShortcut(.cancelAction)
                 
                 Button {
-                    onBookmark(urlString)
+                    onBookmark(urlString,selectedFolder?.uuid)
                 } label: {
                     HStack {
                         if loadingState == .loading {
@@ -80,5 +84,33 @@ struct AddBookmarkView: View {
                
             }
         }
+    }
+    
+    private func AddFolderSection() -> some View {
+        Section("Add To Folder"){
+            ForEach(folderList , id: \.uuid){ folder in
+                Button(action: {
+
+                    selectedFolder = folder
+                }) {
+                    HStack {
+                        Image(systemName: "folder")
+                        Text(folder.folderName!)
+                        
+                        Spacer()
+                        
+                        if selectedFolder?.uuid == folder.uuid {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                }
+                .foregroundColor(.primary)
+                
+                
+            }
+            
+        }
+        
     }
 }

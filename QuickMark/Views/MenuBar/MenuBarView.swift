@@ -17,10 +17,10 @@ struct MenuBarView: View {
             TextField("Enter bookmark URL", text: $bookmarkURL)
                 .bookmarkTextFieldStyle()
                 .onSubmit {
-                    viewModel.addBookmark(url: bookmarkURL)
+                    viewModel.addBookmark(url: bookmarkURL,folderUUID: nil)
                 }
             Button{
-                viewModel.addBookmark(url: bookmarkURL)
+                viewModel.addBookmark(url: bookmarkURL,folderUUID: nil)
             } label: {
                 HStack {
                     if(viewModel.loadingState == .loading){

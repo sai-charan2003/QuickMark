@@ -1,5 +1,5 @@
 //
-//  QuickMark+CoreDataClass.swift
+//  FolderData+CoreDataClass.swift
 //  QuickMark
 //
 //  Created by Sai Charan on 10/01/25.
@@ -10,6 +10,6 @@ import Foundation
 import CoreData
 
 
-public class QuickMark: NSManagedObject {
+public class FolderData: NSManagedObject {
 
 }

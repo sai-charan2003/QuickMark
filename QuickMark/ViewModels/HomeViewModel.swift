@@ -11,11 +11,13 @@ import SwiftSoup
 class HomeViewModel : ObservableObject {
     @Published var bookmarks : [QuickMark] = []
     @Published var loadingState : LoadingState? = nil
+    @Published var folders : [FolderData] = []
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
         self.context = context
         fetchBookmarks()
+        fetchFolders()
         observeBookmarks()
     }
     
@@ -25,7 +27,7 @@ class HomeViewModel : ObservableObject {
         
         do {
             bookmarks = try context.fetch(request)
-            print(bookmarks.count)
+            print(bookmarks)
         } catch {
             print("Unable to get the data. Please try again.")
         }
@@ -44,7 +46,7 @@ class HomeViewModel : ObservableObject {
         
     }
     
-    func addBookmark(url: String) {
+    func addBookmark(url: String,folderUUID : UUID?) {
         loadingState = .loading
         
         extractWebsiteData(from: url) { quickmark in
@@ -54,6 +56,7 @@ class HomeViewModel : ObservableObject {
                 if quickmark != nil {
                     do {
                         print("Saving bookmark with extracted data")
+                        quickmark?.folderUUID = folderUUID
                         
                         try self.context.save()
                         self.loadingState = .success
@@ -172,6 +175,41 @@ class HomeViewModel : ObservableObject {
     
     func fetchLastThreeBookmarks() -> [QuickMark] {
         return Array(bookmarks.sorted { $0.createdAt! < $1.createdAt! }.prefix(3))
+    }
+    
+    func fetchFolders() {
+        let request: NSFetchRequest<FolderData> = FolderData.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \FolderData.createdAt, ascending: false)]
+        
+        do {
+            folders = try context.fetch(request)
+            print(folders.count)
+        } catch {
+            print("Unable to get the data. Please try again.")
+        }
+    }
+    
+    func addFolder(folderName : String){
+        do {
+            let newFolder = FolderData(context: context)
+            newFolder.createdAt = Date()
+            newFolder.folderName = folderName
+            newFolder.uuid = UUID()
+            try context.save()
+            fetchFolders()
+
+        } catch {
+            print(error)
+        }
+    }
+    func deleteFolder(folder : FolderData){
+        context.delete(folder)
+        do {
+            try context.save()
+            fetchFolders()
+        } catch {
+            print(error)
+        }
     }
 
 

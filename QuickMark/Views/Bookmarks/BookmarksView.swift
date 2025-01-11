@@ -11,11 +11,14 @@ struct BookmarksView: View {
     @State private var showAddURL: Bool = false
     @State private var searchString : String = ""
     @FocusState private var isSearchFieldFocused: Bool
+    @State  var folderUUID : UUID?
 
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: 10)], spacing: 10) {
-                ForEach(viewModel.bookmarks, id: \.uuid) { bookmark in
+                ForEach(viewModel.bookmarks.filter { bookmark in
+                    folderUUID == nil || bookmark.folderUUID == folderUUID
+                }, id: \.uuid) { bookmark in
                     BookmarkCard(bookmark: bookmark, onDelete: { bookmark in
                         withAnimation{
                             viewModel.deleteBookmark(bookmark: bookmark)
