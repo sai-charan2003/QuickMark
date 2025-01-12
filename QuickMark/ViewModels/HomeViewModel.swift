@@ -211,6 +211,25 @@ class HomeViewModel : ObservableObject {
             print(error)
         }
     }
+    
+    func addBookmarkToFolder(folderUUID : UUID, bookmark : UUID){
+        let fetchRequest : NSFetchRequest<QuickMark> = QuickMark.fetchRequest()
+        do {
+            let bookmarks = try context.fetch(fetchRequest)
+            let bookmarkToAdd = bookmarks.filter { $0.uuid == bookmark }
+            if let itemToUpdate = bookmarkToAdd.first {
+                itemToUpdate.folderUUID = folderUUID
+                try context.save()
+            }
+            
+            
+            
+        } catch {
+            print(error)
+        }
+        
+        
+    }
 
 
 }

@@ -87,30 +87,38 @@ struct AddBookmarkView: View {
     }
     
     private func AddFolderSection() -> some View {
-        Section("Add To Folder"){
-            ForEach(folderList , id: \.uuid){ folder in
-                Button(action: {
-
-                    selectedFolder = folder
-                }) {
+        Section("Add To Folder") {
+            List {
+                ForEach(folderList, id: \.self) { folder in
                     HStack {
-                        Image(systemName: "folder")
-                        Text(folder.folderName!)
-                        
-                        Spacer()
-                        
-                        if selectedFolder?.uuid == folder.uuid {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.blue)
+                        Toggle(isOn: Binding(
+                            get: { selectedFolder == folder },
+                            set: { isSelected in
+                                if isSelected {
+                                    selectedFolder = folder
+                                } else {
+                                    selectedFolder = nil
+                                }
+                            }
+                        )) {
+                            HStack {
+                                Image(systemName: "folder.fill")
+                                    .foregroundColor(.blue)
+                                Text(folder.folderName ?? "")
+                                    .font(.system(size: 16, weight: .medium))
+                            }
                         }
                     }
+                    .padding(.vertical, 4)
                 }
-                .foregroundColor(.primary)
-                
-                
             }
-            
+            .listStyle(.plain)
+            .frame(height: 100)
+            .cornerRadius(8)
+            .scrollContentBackground(.hidden)
         }
+        .padding(.horizontal, 20)
+    }
         
     }
-}
+

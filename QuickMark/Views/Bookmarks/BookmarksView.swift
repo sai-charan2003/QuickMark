@@ -23,8 +23,17 @@ struct BookmarksView: View {
                         withAnimation{
                             viewModel.deleteBookmark(bookmark: bookmark)
                         }
-                    })
+                    },
+                                 folderList : viewModel.folders,
+                                 onAddToFolder: { bookmarkUUID, folderUUID in
+                        viewModel.addBookmarkToFolder(folderUUID: folderUUID, bookmark: bookmarkUUID)
+                        
+                    }
+                                 
+                                 
+                    )
                         .frame(width: 300, height: 250)
+                    
                 }
             }
         }

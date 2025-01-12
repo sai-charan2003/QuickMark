@@ -11,7 +11,9 @@ struct BookmarkCard: View {
     @Environment(\.openURL) var openURL
     var onDelete: ((QuickMark) -> Void)
     let clipBoard = NSPasteboard.general
-
+    @State var folderList : [FolderData] = []
+    var onAddToFolder : ((UUID,UUID) -> Void)
+    
     var body: some View {
         VStack {
             AsyncImage(url: URL(string: bookmark.imageURL?.isEmpty == false ? bookmark.imageURL ?? "" : "https://api.faviconkit.com/\(bookmark.hostURL ?? "")")) { phase in
@@ -91,6 +93,15 @@ struct BookmarkCard: View {
 
             Button("Delete") {
                 onDelete(bookmark)
+            }
+            Menu("Add to folder"){
+                ForEach(folderList , id : \.uuid) { folder in
+                    Button(folder.folderName!) {
+                        onAddToFolder(bookmark.uuid!,folder.uuid!)
+                        
+                        
+                    }
+                }
             }
             Divider()
             if let url = URL(string: bookmark.websiteURL ?? "") {
