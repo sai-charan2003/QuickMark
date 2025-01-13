@@ -15,6 +15,8 @@ struct HomeView: View {
     @State private var addFolder : Bool = false
     @State private var folderItems : [FolderData] = []
     @EnvironmentObject private var viewModel: HomeViewModel
+    @State private var isHovered = false
+
 
     var body: some View {
         NavigationSplitView {
@@ -62,26 +64,25 @@ struct HomeView: View {
 
 
     private var createFolderButton: some View {
-        Button(action: {
-            addFolder.toggle()
-        }) {
+
             HStack {
-                Image(systemName: "folder.badge.plus")
+                Image(systemName: "plus")
                 Text("Create folder")
                 Spacer()
             }
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
+            .onTapGesture {
+                addFolder.toggle()
+            }
+
+
+        
         .sheet(isPresented: $addFolder){
             AddFolderView(
                 onFolderBookmark: { folder in
                     viewModel.addFolder(folderName: folder)
                     addFolder.toggle()
-                    
-                    
-                    
                 },
                 onCancel: {
                     addFolder.toggle()
@@ -97,7 +98,9 @@ struct HomeView: View {
     private var folderList: some View {
         ForEach(viewModel.folders, id: \.uuid) { folder in
             NavigationLink {
-                BookmarksView(folderUUID : folder.uuid)
+                
+                FolderView(folderUUID : folder.uuid)
+                    .id(folder.uuid)
                 
             } label: {
                 HStack {

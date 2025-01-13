@@ -12,6 +12,7 @@ class HomeViewModel : ObservableObject {
     @Published var bookmarks : [QuickMark] = []
     @Published var loadingState : LoadingState? = nil
     @Published var folders : [FolderData] = []
+    var selectedUUID : UUID? = nil
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
@@ -161,16 +162,12 @@ class HomeViewModel : ObservableObject {
         loadingState = nil
     }
     
-    func searchBookmarks(query: String) {
-        let request: NSFetchRequest<QuickMark> = QuickMark.fetchRequest()
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@ OR websiteURL CONTAINS[cd] %@", query, query)
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \QuickMark.createdAt, ascending: false)]
-        
-        do {
-            bookmarks = try context.fetch(request)
-        } catch {
-            print("Error fetching search results: \(error)")
-        }
+    func searchBookmarks(query: String,selectedUUID : UUID? = nil) {
+        bookmarks = bookmarks.filter {
+                    ($0.title?.localizedCaseInsensitiveContains(query) ?? false) ||
+                    ($0.websiteURL?.localizedCaseInsensitiveContains(query) ?? false)
+            
+                }
     }
     
     func fetchLastThreeBookmarks() -> [QuickMark] {
@@ -228,6 +225,23 @@ class HomeViewModel : ObservableObject {
             print(error)
         }
         
+        
+    }
+    
+    func folderData(folderUUID : UUID) -> FolderData?{
+        do {
+            let fetchRequest : NSFetchRequest<FolderData> = FolderData.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "uuid == %@", folderUUID as CVarArg)
+            let folder = try context.fetch(fetchRequest).first
+            return folder
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    func filterDataByFolderUUID(folderUUID : UUID) {
+        bookmarks = bookmarks.filter{$0.folderUUID == folderUUID}
         
     }
 
