@@ -22,9 +22,16 @@ struct BookmarksView: View {
                             viewModel.deleteBookmark(bookmark: bookmark)
                         }
                     },
-                                 folderList : viewModel.folders,
+                                 folderList: Binding(
+                                         get: { viewModel.folders },
+                                         set: { viewModel.folders = $0 }
+                                     ),
                                  onAddToFolder: { bookmarkUUID, folderUUID in
                         viewModel.addBookmarkToFolder(folderUUID: folderUUID, bookmark: bookmarkUUID)
+                        
+                    },
+                                 onRemoveFromFolder: { bookmarkUUID in
+                        viewModel.removeBookmarkFromFolder(bookmark: bookmark)
                         
                     }
                                  

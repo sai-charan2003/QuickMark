@@ -18,28 +18,8 @@ struct FolderView: View {
 
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: 10)], spacing: 10) {
-                ForEach(viewModel.bookmarks.filter{
-                    $0.folderUUID == folderUUID!
-                }, id: \.uuid) { bookmark in
-                    BookmarkCard(bookmark: bookmark,
-                                 onDelete: { bookmark in
-                                withAnimation{
-                                    viewModel.deleteBookmark(bookmark: bookmark)
-                                }
-                            },
-                                 folderList : viewModel.folders,
-                                 onAddToFolder: { bookmarkUUID, folderUUID in
-                        viewModel.addBookmarkToFolder(folderUUID: folderUUID, bookmark: bookmarkUUID)
-                        
-                    }
-                                 
-                                 
-                    )
-                        .frame(width: 300, height: 250)
-                    
-                }
-            }
+            BookmarksInFolder()
+
             .onAppear(){
                 viewModel.fetchBookmarks()
                 folderData = viewModel.folderData(folderUUID: folderUUID!)
@@ -61,6 +41,38 @@ struct FolderView: View {
             }
         }
         
+        
+    }
+    private func BookmarksInFolder() -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: 10)], spacing: 10) {
+            ForEach(viewModel.bookmarks.filter{
+                $0.folderUUID == folderUUID!
+            }, id: \.uuid) { bookmark in
+                BookmarkCard(bookmark: bookmark,
+                             onDelete: { bookmark in
+                            withAnimation{
+                                viewModel.deleteBookmark(bookmark: bookmark)
+                            }
+                        },
+                             folderList: Binding(
+                                     get: { viewModel.folders },
+                                     set: { viewModel.folders = $0 }
+                                 ),
+                             onAddToFolder: { bookmarkUUID, folderUUID in
+                    viewModel.addBookmarkToFolder(folderUUID: folderUUID, bookmark: bookmarkUUID)
+                    
+                }
+                             ,
+                             onRemoveFromFolder: { uuid in 
+                    viewModel.removeBookmarkFromFolder(bookmark: bookmark)
+                }
+                             
+                             
+                )
+                    .frame(width: 300, height: 250)
+                
+            }
+        }
         
     }
 }

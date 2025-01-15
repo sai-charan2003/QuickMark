@@ -244,6 +244,19 @@ class HomeViewModel : ObservableObject {
         bookmarks = bookmarks.filter{$0.folderUUID == folderUUID}
         
     }
+    
+    func removeBookmarkFromFolder(bookmark : QuickMark){
+        do {
+            let fetchRequest : NSFetchRequest<QuickMark> = QuickMark.fetchRequest()
+            let bookmarkToUpdate = try context.fetch(fetchRequest).filter { $0.uuid == bookmark.uuid }
+            if let itemToUpdate = bookmarkToUpdate.first {
+                itemToUpdate.folderUUID = nil
+                try context.save()
+            }
+        } catch {
+            print(error)
+        }
+    }
 
 
 }
