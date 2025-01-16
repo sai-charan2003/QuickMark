@@ -4,7 +4,7 @@
 </div>
 
 
-QuickMark is a simple macOS bookmark manager built with SwiftUI. It uses Core Data framework to store data locally. The app allows you to quickly save and organize your favorite websites into folders. QuickMark also features a convenient menu bar icon for quick bookmark adding.
+QuickMark is a simple macOS bookmark manager built with SwiftUI. It uses the Core Data framework to store data locally. The app allows you to quickly save and organize your favorite websites into folders. QuickMark also features a convenient menu bar icon for quickly adding bookmarks.
 
 
 ## Features
