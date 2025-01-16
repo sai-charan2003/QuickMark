@@ -46,6 +46,11 @@
 			path = QuickMark;
 			sourceTree = "<group>";
 		};
+		0AC5F00A2D391D8600661514 /* Screenshots */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Screenshots;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +68,7 @@
 		0A48A5BE2D1BDC0A00F27251 = {
 			isa = PBXGroup;
 			children = (
+				0AC5F00A2D391D8600661514 /* Screenshots */,
 				0A48A5C92D1BDC0A00F27251 /* QuickMark */,
 				0A48A5C82D1BDC0A00F27251 /* Products */,
 			);
@@ -94,6 +100,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				0A48A5C92D1BDC0A00F27251 /* QuickMark */,
+				0AC5F00A2D391D8600661514 /* Screenshots */,
 			);
 			name = QuickMark;
 			packageProductDependencies = (
